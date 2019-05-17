@@ -17,10 +17,21 @@ class Wine(scrapy.Item):
     type_wine = scrapy.Field()
     variety = scrapy.Field()
     country = scrapy.Field()
+    region = scrapy.Field()
     winerie = scrapy.Field()
 
 class Winerie(scrapy.Item):
     name = scrapy.Field()
+    url = scrapy.Field()
     country = scrapy.Field()
     variety = scrapy.Field()
     wines = scrapy.Field() # put the list of wines ?
+
+class Country(scrapy.Item):
+    name = scrapy.Field()
+    url = scrapy.Field()
+
+class Region(scrapy.Item):
+    name = scrapy.Field()
+    url = scrapy.Field()
+    country = scrapy.Field()
