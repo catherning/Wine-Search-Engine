@@ -4,7 +4,6 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy_spider.items import Wine
 
 import re
-import csv #TODO remove later ?
 
 class iwinedbSpider(CrawlSpider):
     name = 'iWineDB'
@@ -14,14 +13,11 @@ class iwinedbSpider(CrawlSpider):
     #handle_httpstatus_list = [302]
 
     rules = (
-        Rule(LinkExtractor(allow=(r'^WineriesBrowseGeo'),deny=(r"twitter",r'facebook')),follow=True),
-        Rule(LinkExtractor(allow=(r'^WineryDetails'),deny=(r"twitter",r'facebook')), callback='parse_winerie'),
-        Rule(LinkExtractor(allow=(r'^WineDetails'),deny=(r"twitter",r'facebook')), callback='parse_wine'),
+        Rule(LinkExtractor(allow=(r'WineriesBrowseGeo'),deny=(r"twitter",r'facebook')),follow=True),
+        Rule(LinkExtractor(allow=(r'WineryDetails'),deny=(r"twitter",r'facebook')), callback='parse_winerie'),
+        Rule(LinkExtractor(allow=(r'WineDetails'),deny=(r"twitter",r'facebook')), callback='parse_wine'),
         
     )
-
-    # def __init(self):
-    #     self.driver = webdriver.Chrome("D:\Documents\Tsinghua\WIR-WineSearch\chromedriver.exe")
 
     def start_requests(self):
         urls = ['http://iwinedb.com/Wineries.aspx']
@@ -31,9 +27,6 @@ class iwinedbSpider(CrawlSpider):
 
 
     def parse_winerie(self,response):
-        # if response.status!=200:
-        #     with open("not_processed_urls.txt","w") as f:
-        #         f.write(response.url)
         
         wine_list_id=response.xpath("//td[@class='DataCell']").extract()
         wine_list_id=[re.sub(r"<(.*?)>","",x) for x in wine_list_id]
@@ -45,9 +38,6 @@ class iwinedbSpider(CrawlSpider):
             yield scrapy.Request(url=url, callback=self.parse_wine)
 
     def parse_wine(self, response):
-        # if response.status!=200:
-        #     with open("not_processed_urls.txt","a") as f:
-        #             f.write(response.url+"\n")
 
         wine = Wine()
         wine["name"]=re.sub("^\d{4} ","",response.xpath("//span[@id='LabelWineTitle']//text() ").extract_first())
