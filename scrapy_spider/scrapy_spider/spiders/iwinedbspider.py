@@ -3,8 +3,6 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy_spider.items import Wine
 
-#from selenium import webdriver
-
 import re
 import csv #TODO remove later ?
 
@@ -13,10 +11,12 @@ class iwinedbSpider(CrawlSpider):
 
     allowed_domain=['http://iwinedb.com']
 
+    #handle_httpstatus_list = [302]
+
     rules = (
-        Rule(LinkExtractor(allow=(r'WineriesBrowseGeo*' ),deny=(r"twitter",r'facebook')),follow=True),
-        Rule(LinkExtractor(allow=(r'WineryDetails*'),deny=(r"twitter",r'facebook')), callback='parse_winerie'),
-        Rule(LinkExtractor(allow=(r'WineDetails*'),deny=(r"twitter",r'facebook')), callback='parse_wine'),
+        Rule(LinkExtractor(allow=(r'^WineriesBrowseGeo'),deny=(r"twitter",r'facebook')),follow=True),
+        Rule(LinkExtractor(allow=(r'^WineryDetails'),deny=(r"twitter",r'facebook')), callback='parse_winerie'),
+        Rule(LinkExtractor(allow=(r'^WineDetails'),deny=(r"twitter",r'facebook')), callback='parse_wine'),
         
     )
 
@@ -31,47 +31,26 @@ class iwinedbSpider(CrawlSpider):
 
 
     def parse_winerie(self,response):
-        #self.driver.get(response.url)
+        # if response.status!=200:
+        #     with open("not_processed_urls.txt","w") as f:
+        #         f.write(response.url)
         
-        wine_list_id=response.css("td[class=DataCell]::text").extract()
+        wine_list_id=response.xpath("//td[@class='DataCell']").extract()
+        wine_list_id=[re.sub(r"<(.*?)>","",x) for x in wine_list_id]
         wine_list_id=[x for i,x in enumerate(wine_list_id) if i%9==0]
 
         urls_list=["http://iwinedb.com/WineDetails.aspx?wid={}&p=0".format(wine_id) for wine_id in wine_list_id ]
 
-        # current_wine=driver.find_element_by_id("GridWines_row_0")
-        
-        # wjne.click()
-        # wine_list.append(driver.current_url)
-
         for url in urls_list:
             yield scrapy.Request(url=url, callback=self.parse_wine)
 
-    # def parse_countries(self, response):
-    #     pass
-
-    #     # countries = response.css('a[href^=Wineries] ::text').getall()
-    #     # countries_page = response.css('a[href^=Wineries]::attr(href)').getall()
-
-    #     # with open("countries.csv", 'w',newline="") as f:
-    #     #     wr = csv.writer(f)
-    #     #     for i in range(len(countries)):
-    #     #         wr.writerow([countries[i],countries_page[i]])
-
-    #     # self.log('Saved files.')
-
-    #     country = items.Country()
-    #     country["name"]=response.css('td[id=TableCellBreadCrumb] a::text').extract()[3]
-    #     country['url']=response.url
-
-    #     return country
-
-    # def parse_region(self, response):
-    #     pass
-
     def parse_wine(self, response):
-        self.logger.info('Hi, this is an item page! %s', response.url)
+        # if response.status!=200:
+        #     with open("not_processed_urls.txt","a") as f:
+        #             f.write(response.url+"\n")
+
         wine = Wine()
-        wine["name"]=response.xpath("//span[@id='LabelWineTitle']//text() ").extract_first()
+        wine["name"]=re.sub("^\d{4} ","",response.xpath("//span[@id='LabelWineTitle']//text() ").extract_first())
         wine["url"] = response.url
         wine["price"]=response.xpath("//span[@id='LabelReleasePrice']//text() ").extract_first() #XXX price keep currency!!!! (so also in database from winemag, TODO add currency and change type of column)
         
@@ -92,4 +71,5 @@ class iwinedbSpider(CrawlSpider):
         #XXX might give error if no rating ?
 
         wine["winerie"] =response.css('td[id=TableCellBreadCrumb] a::text').extract()[-1]
+        
         return wine

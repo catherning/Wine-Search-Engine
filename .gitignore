@@ -113,3 +113,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 scrapy_spider/wines.json
+scrapy_spider/wines_with_errors.json
