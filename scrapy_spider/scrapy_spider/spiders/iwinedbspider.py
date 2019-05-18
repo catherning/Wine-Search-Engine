@@ -3,6 +3,8 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy_spider.items import Wine
 
+#from selenium import webdriver
+
 import re
 import csv #TODO remove later ?
 
@@ -12,19 +14,37 @@ class iwinedbSpider(CrawlSpider):
     allowed_domain=['http://iwinedb.com']
 
     rules = (
-        # Extract links matching 'category.php' (but not matching 'subsection.php')
-        # and follow links from them (since no callback means follow=True by default).
-        Rule(LinkExtractor(allow=(r'WineriesBrowseGeo*',r'WineryDetails*' ),deny=(r"twitter",r'facebook'))),
-
-        # Extract links matching 'item.php' and parse them with the spider's method parse_item
-        Rule(LinkExtractor(allow=(r'WineDetails*', ),deny=(r"twitter",r'facebook')), callback='parse_wine'),
+        Rule(LinkExtractor(allow=(r'WineriesBrowseGeo*' ),deny=(r"twitter",r'facebook')),follow=True),
+        Rule(LinkExtractor(allow=(r'WineryDetails*'),deny=(r"twitter",r'facebook')), callback='parse_winerie'),
+        Rule(LinkExtractor(allow=(r'WineDetails*'),deny=(r"twitter",r'facebook')), callback='parse_wine'),
+        
     )
+
+    # def __init(self):
+    #     self.driver = webdriver.Chrome("D:\Documents\Tsinghua\WIR-WineSearch\chromedriver.exe")
 
     def start_requests(self):
         urls = ['http://iwinedb.com/Wineries.aspx']
 
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
+
+
+    def parse_winerie(self,response):
+        #self.driver.get(response.url)
+        
+        wine_list_id=response.css("td[class=DataCell]::text").extract()
+        wine_list_id=[x for i,x in enumerate(wine_list_id) if i%9==0]
+
+        urls_list=["http://iwinedb.com/WineDetails.aspx?wid={}&p=0".format(wine_id) for wine_id in wine_list_id ]
+
+        # current_wine=driver.find_element_by_id("GridWines_row_0")
+        
+        # wjne.click()
+        # wine_list.append(driver.current_url)
+
+        for url in urls_list:
+            yield scrapy.Request(url=url, callback=self.parse_wine)
 
     # def parse_countries(self, response):
     #     pass
@@ -48,14 +68,11 @@ class iwinedbSpider(CrawlSpider):
     # def parse_region(self, response):
     #     pass
 
-
-    # def parse_wineries(self, response):
-    #     pass
-
     def parse_wine(self, response):
+        self.logger.info('Hi, this is an item page! %s', response.url)
         wine = Wine()
         wine["name"]=response.xpath("//span[@id='LabelWineTitle']//text() ").extract_first()
-        wine[" url"] = response.url
+        wine["url"] = response.url
         wine["price"]=response.xpath("//span[@id='LabelReleasePrice']//text() ").extract_first() #XXX price keep currency!!!! (so also in database from winemag, TODO add currency and change type of column)
         
         wine["vintage"]=response.xpath("//span[@id='LabelVintage']//text() ").extract_first()
@@ -68,13 +85,11 @@ class iwinedbSpider(CrawlSpider):
         scores=response.css('td[class="DataCell"]::text').extract()
         scores=[int(el) for el in scores if not re.search(r'\D',el)]
         average=0
-        for i,score in scores:
+        for i,score in enumerate(scores):
             if i%2==1:
                 average+=score
         wine["score"]= average*2/len(scores)
         #XXX might give error if no rating ?
 
         wine["winerie"] =response.css('td[id=TableCellBreadCrumb] a::text').extract()[-1]
-
-        print("Found a wine.")
         return wine
