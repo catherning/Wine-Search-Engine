@@ -48,7 +48,7 @@ class iwinedbSpider(CrawlSpider):
         wine["type_wine"]=response.xpath("//span[@id='LabelVarietalType']//text() ").extract_first()
         wine["variety"]=response.xpath("//span[@id='LabelVarietal']//text() ").extract_first()
         wine["country"]=response.css('td[id=TableCellBreadCrumb] a::text').extract()[3]
-        wine["region"] = response.css('td[id=TableCellBreadCrumb] a::text').extract()[4:-1] #TODO check
+        wine["region"] = response.css('td[id=TableCellBreadCrumb] a::text').extract()[4:-1]
 
         # wine["score"] # average of the scores
         scores=response.css('td[class="DataCell"]::text').extract()
@@ -57,8 +57,10 @@ class iwinedbSpider(CrawlSpider):
         for i,score in enumerate(scores):
             if i%2==1:
                 average+=score
-        wine["score"]= average*2/len(scores)
-        #XXX might give error if no rating ?
+        try:
+            wine["score"]= average*2/len(scores)
+        except ZeroDivisionError:
+            wine["score"]=0
 
         wine["winerie"] =response.css('td[id=TableCellBreadCrumb] a::text').extract()[-1]
         
