@@ -38,6 +38,9 @@ vocabulary={}
 inverted_index_dict={}
 w_id=0
 
+# TODO also do lemmatization and convert numbers and the apostrophe in don't ??
+# https://towardsdatascience.com/tf-idf-for-document-ranking-from-scratch-in-python-on-real-world-dataset-796d339a4089
+
 # Stemming the words (removed the stopwords) for the description of each wine from each website of the database
 #dict_index={}
 tuple_index=[]
