@@ -16,10 +16,10 @@ c = conn.cursor()
 
 c.execute('''SELECT MAX(wine_id) from wines''')
 
-init_nb_wines=c.fetchone()[0]+1 
+TOTAL_DOCS=c.fetchone()[0]+1 
 conn.commit()
 
-print(init_nb_wines)
+print(TOTAL_DOCS)
 
 
 #TODO add wine name/ winery, country, region to stemmed vocab and indexing ? or useless as are already in database in specific columns?
@@ -29,6 +29,8 @@ c.execute('''SELECT wine_id,description from wines''')
 data=c.fetchall()
 conn.commit()
 conn.close()
+
+
 
 ps = PorterStemmer()
 stop_words = list(stopwords.words('english')) 
@@ -97,6 +99,34 @@ for w_id, group in groupby(tuple_index, lambda x: x[0]):
     inverted_index_dict[w_id]["total_count"]=total_count
 
 
+
+
+conn = sqlite3.connect(path+'wines.db')
+c = conn.cursor()
+# (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
+
+# Getting list of the values in the database (except description)
+
+columns=['country','name','score','price','province','region_1','region_2','vintage','variety','winery',"type"]
+#XXX put together region 1 and 2 for search ?
+
+vocab_database={}
+for column in columns:
+    c.execute("SELECT DISTINCT "+column+" from wines")
+    data=c.fetchall()
+    conn.commit()
+
+    if column in ['name','province','region_1','region_2','variety','winery']:
+        vocab_database[column+"_list"]=[el[0].split() for el in data if el[0]!="" and el[0]!=None] #XXX keeping "" in the vocab bc it's in database ?s
+    else:
+        vocab_database[column+"_list"]=[el[0] for el in data if el[0]!=""]
+
+conn.close()
+
+
+
+
+
 print("Created the inverted index (dictionary and postings). Saving it and the vocabulary.")
 
 # Variables to keep: inverted_index_dict, postings, vocabulary
@@ -110,4 +140,7 @@ with open(path+'postings.json', 'w') as fp:
 
 with open(path+'vocabulary_id.json', 'w') as fp:
     json.dump(vocabulary, fp, sort_keys=True, indent=4)
+
+with open(path+'vocabulary_database.json','w') as fp:
+    json.dump(vocab_database, fp, sort_keys=True, indent=4)
 

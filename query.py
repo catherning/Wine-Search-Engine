@@ -14,11 +14,11 @@ conn = sqlite3.connect(path+'wines.db')
 c = conn.cursor()
 # (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
 
+
 c.execute('''SELECT MAX(wine_id) from wines''')
 
 TOTAL_DOCS=c.fetchone()[0]+1 
 conn.commit()
-conn.close()
 
 print(TOTAL_DOCS)
 
@@ -29,13 +29,16 @@ with open(path+"vocabulary_id.json") as f:
 with open(path+"tf_idf.json") as f:
     tf_idf_dict=json.load(f)
 
+with open(path+"vocabulary_database.json") as f:
+    vocab_database=json.load(f)
+
 # Processing the query
 
 ps = PorterStemmer()
 stop_words = list(stopwords.words('english'))
 tokenizer = RegexpTokenizer(r'\w+')
 
-query="domb perignon citrus sweet young"
+query="dom perignon citrus sweet young"
 
 sentence = query.lower()
 tokens = tokenizer.tokenize(sentence)
@@ -47,6 +50,8 @@ not_in_voc=[] #XXX TODO process them by checking if they are winery, region, cou
 
 for word in filtered_sentence:
     stem_w=ps.stem(word)
+
+    in_database_list=[k for k, v in vocab_database.items() if word in v]
 
     #XXX if query word not in vocabulary, not taken care of with VSM!!!!
     if stem_w in vocabulary:
@@ -77,6 +82,9 @@ relevant_doc_id=list(zip(*heapq.nlargest(NB_RESULTS, enumerate(similarity_list),
 
 print(relevant_doc_id)
 
+#XXX can do above in C++ faster ??
+
+
 conn = sqlite3.connect(path+'wines.db')
 c = conn.cursor()
 # (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
@@ -90,6 +98,7 @@ c.execute(sql, relevant_doc_id)
 results=c.fetchall() 
 conn.commit()    
 
-print(results)
+for wine in results:
+    print(wine)
 
 conn.close()

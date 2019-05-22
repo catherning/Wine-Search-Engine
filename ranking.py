@@ -15,7 +15,7 @@ path="D:/Documents/Tsinghua/WIR-WineSearch/"
 
 conn = sqlite3.connect(path+'wines.db')
 c = conn.cursor()
-# (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
+# (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT,type TEXT, url TEXT)''')
 
 c.execute('''SELECT MAX(wine_id) from wines''')
 
