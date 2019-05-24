@@ -9,8 +9,23 @@
     <body>
         <div>Search Engine: 
             <a href="/index">Home</a></div>
-            <a href="/results">Results</a>
+            <a href="/about">About</a>
         <hr>
+
+        <!-- https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms url_for ne marche pas -->
+
+        
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </body>
 </html>

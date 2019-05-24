@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Results for: "{{ query.string }}"</h2>
+    <h2>Results for: "{{ query }}"</h2>
     {% for wine in wines %}
         <div><p>Wine: {{ wine.name }}: <b>{{ wine.description }}</b></p></div>
     {% endfor %}

@@ -1,29 +1,28 @@
-from flask import render_template
+from flask import render_template, flash, redirect, url_for
 from app import app
 from app.wine_query.query import results_from_query
 from app.search_box import SearchBox
 
-@app.route('/')
-@app.route('/index')
-def login():
-    form = SearchBox()
-    return render_template('index.html', title='Search', form=form)
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    search = SearchBox()
+    if search.validate_on_submit():
+        flash('Query {}'.format(
+            search.query.data))
+        return search_query(search)
+    return render_template('index.html', title='Search', form=search)
 
 
 @app.route('/results')
-def index():
-    user_query={"string":"dom perignon sweet citrus"}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
+def search_query(query):
+    search_string = query.data['query']
 
-    results = results_from_query(user_query["string"])
+    results = results_from_query(search_string)
 
-    return render_template('results.html', title='Results', query=user_query, wines=results)
+    return render_template('results.html', title='Results', query=search_string, wines=results)
+
+
+@app.route('/about')
+def about_page():
+    return render_template('about.html', title='About')
