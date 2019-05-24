@@ -1,0 +1,16 @@
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }}</title>
+        {% else %}
+        <title>WineSearch - Query </title>
+        {% endif %}
+    </head>
+    <body>
+        <div>Search Engine: 
+            <a href="/index">Home</a></div>
+            <a href="/results">Results</a>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
