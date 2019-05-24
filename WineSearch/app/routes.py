@@ -16,11 +16,17 @@ def index():
 
 @app.route('/results')
 def search_query(query):
+    search2 = SearchBox()
+    if search2.validate_on_submit():
+        # flash('Query {}'.format(
+        #     search.query.data))
+        return search_query(search2)
+
     search_string = query.data['query']
 
     results = results_from_query(search_string)
 
-    return render_template('results.html', title='Results', query=search_string, wines=results)
+    return render_template('results.html', title='Results', query=search_string, wines=results, form=search2)
 
 
 @app.route('/about')

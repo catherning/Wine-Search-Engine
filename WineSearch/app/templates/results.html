@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>Searching</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.query.label }}<br>
+            {{ form.query(size=32) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
     <h2>Results for: "{{ query }}"</h2>
     {% for wine in wines %}
         <div><p>Wine: {{ wine.name }}: <b>{{ wine.description }}</b></p></div>
