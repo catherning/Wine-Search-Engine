@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>WineSearch</h1>
-    <form action="" metdod="post" novalidate>
+    <h1>Searching</h1>
+    <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.query.label }}<br>
@@ -11,44 +11,10 @@
         <p>{{ form.submit() }}</p>
     </form>
 
-<h2>Results for: "{{ query }}"</h2>
-{% for wine in wines %}
-<div>
-    <table width="900" border="1">
-        <!-- <caption></caption>  -->
-        <tr>
-            <td width="15%"> {{ wine.country }}</td>
-            
-            <td><b> {{ wine.name }}</b></td>
-            <td><b>{{ wine.winery }}</b></td>
-            <td>{{ wine.vintage }}</td>
-            <td width="7%"></td>
-        </tr>
-        <tr>
-            <td> {{ wine.province }}</td>
-            <td colspan="3" rowspan="3">{{ wine.description }}</td>
-            <td>{{ wine.score }}/100</td>
-            
-        </tr>
-        <tr>
-            <td> {{ wine.type }}</td>
-            {% if wine.price %}
-            <td>{{ wine.price }}$</td>
-            {% else %}
-            <td>{{ wine.price }}</td>
-            {% endif %}
-        </tr>
-        <tr>
-            <td> {{ wine.variety }}</td>
-            <td></td>
-        </tr>
-        <tr>
-                <td colspan="5"> <p><a href= {{ wine.url }} target="_blank" rel="nofollow">{{ wine.url }}</a></p>  </td>
-            </tr>
-    </table>
-    <br>
-
-
-</div>
-{% endfor %}
+    <h2>Results for: "{{ query }}"</h2>
+    {% for wine in wines %}
+    <div>
+        <p>Wine: {{ wine.name }}: <b>{{ wine.description }}</b></p>
+    </div>
+    {% endfor %}
 {% endblock %}
