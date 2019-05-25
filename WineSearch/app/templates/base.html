@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-            <meta charset="utf-8">
-        {% if title %}
-        <title>{{ title }}</title>
-        {% else %}
-        <title>WineSearch - Query </title>
-        {% endif %}
-    </head>
-    <body>
-        <div>Search Engine: 
-            <a href="/index">Home</a></div>
-            <a href="/about">About</a>
-        <hr>
 
-        <!-- https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms url_for ne marche pas -->
+<head>
+    <meta charset="utf-8">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>WineSearch - Query </title>
+    {% endif %}
+</head>
 
-        
-        
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
+<body>
+    <div>Search Engine:
+        <a href="/index">Home</a></div>
+    <a href="/about">About</a>
+    <hr>
 
-        {% block content %}{% endblock %}
-    </body>
+    <!-- https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms url_for ne marche pas -->
+
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</body>
+
 </html>

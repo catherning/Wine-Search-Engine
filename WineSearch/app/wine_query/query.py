@@ -123,7 +123,6 @@ def results_from_query(query):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict
             except Exception:
                 continue
 
-
     return r
     
 

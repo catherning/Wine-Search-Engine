@@ -14,7 +14,7 @@ def index():
     return render_template('index.html', title='WineSearch', form=search)
 
 
-@app.route('/results')
+#@app.route('/results')
 def search_query(query):
     search2 = SearchBox()
     if search2.validate_on_submit():
