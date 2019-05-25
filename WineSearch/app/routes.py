@@ -8,13 +8,13 @@ from app.search_box import SearchBox
 def index():
     search = SearchBox()
     if search.validate_on_submit():
-        flash('Query {}'.format(
-            search.query.data))
+        # flash('Query {}'.format(
+        #     search.query.data))
         return search_query(search)
-    return render_template('index.html', title='Search', form=search)
+    return render_template('index.html', title='WineSearch', form=search)
 
 
-@app.route('/results')
+#@app.route('/results')
 def search_query(query):
     search2 = SearchBox()
     if search2.validate_on_submit():
