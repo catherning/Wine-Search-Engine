@@ -116,15 +116,13 @@ def results_from_query(query):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict
         for i, value in enumerate(row)) for row in results]
     
     for result in r:
-        print(result)
+        # print(result)
         for key,value in result.items():
             try:
-                result[key]=value.replace("&amp;amp;","&amp;")
-                print("Replacing &!")
-            except Exception as e:
-                print(e)
+                result[key]=value.replace("&amp;","&")
+            except Exception:
+                continue
 
-    #print(r)
 
     return r
     
