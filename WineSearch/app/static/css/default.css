@@ -80,6 +80,12 @@ a:hover
 			line-height: 1.5em;
 			font-size: 1.3em;
 		}
+
+		/*TODO check, but do by id because want smaller for price ?*/
+		form input
+		{
+			width: 150%;
+		}
 	
 		form input.text,
 		form select,
@@ -87,7 +93,6 @@ a:hover
 		{
 			position: relative;
 			-webkit-appearance: none;
-			/*display: block;*/
 			border: 0;
 			background: #fff;
 			background: rgba(255,255,255,0.75);
