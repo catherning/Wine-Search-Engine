@@ -49,7 +49,7 @@ def dict_factory(cursor, row):
     return d
 
 
-def results_from_query(query):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict,NB_RESULTS,path_to_db):
+def results_from_query(query,score,price):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict,NB_RESULTS,path_to_db):
 
     #TODO some spelling check of the query beforehand ? add vocabulary (both) to the spelling check dictionary possible ?
     sentence = query.lower()
@@ -122,6 +122,10 @@ def results_from_query(query):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict
                 result[key]=value.replace("&amp;","&")
             except Exception:
                 continue
+
+    print(score)
+    print(price)
+
 
     return r
     

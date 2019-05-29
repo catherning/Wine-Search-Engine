@@ -15,18 +15,20 @@ def index():
 
 
 #@app.route('/results')
-def search_query(query):
+def search_query(query,first_time=True):
     search2 = SearchBox()
-    if search2.validate_on_submit():
+    if search2.validate_on_submit() and first_time:
         # flash('Query {}'.format(
         #     search.query.data))
-        return search_query(search2)
+        return search_query(search2,first_time=False)
 
     search_string = query.data['query']
+    score=query.data['score']
+    price=[query.data['price_l'],query.data['price_h']]
 
-    results = results_from_query(search_string)
+    results = results_from_query(search_string,score,price)
 
-    return render_template('results.html', title='Results', query=search_string, wines=results, form=search2,cur_page='results')
+    return render_template('results.html', title='Results', query=search_string, wines=results, form=search2,cur_page='results',score=score)
 
 
 @app.route('/about')
