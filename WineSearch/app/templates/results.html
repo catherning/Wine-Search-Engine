@@ -1,45 +1,53 @@
 {% extends "index.html" %}
 
 {% block results %}
-    <h2>Results for: "{{ query }}"</h2>
-    {% for wine in wines %}
-    <div>
-        <table width="900" border="1">
-            <!-- <caption></caption>  -->
-            <tr>
-                <td width="15%"> {{ wine.country }}</td>
-                
-                <td><b> {{ wine.name }}</b></td>
-                <td><b>{{ wine.winery }}</b></td>
-                <td width="7%">{{ wine.vintage }}</td>
-                <td width="7%"></td>
-            </tr>
-            <tr>
-                <td> {{ wine.province }}</td>
-                <td colspan="3" rowspan="3">{{ wine.description }}</td>
-                <td>{{ wine.score }}/100</td>
-                
-            </tr>
-            <tr>
-                <td> {{ wine.type }}</td>
-                {% if title %}
-                <td>{{ wine.price }}$</td>
-                {% else %}
-                <td>{{ wine.price }}</td>
-                {% endif %}
-                
-            </tr>
-            <tr>
-                <td> {{ wine.variety }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                    <td colspan="5"><a href={{ wine.url }} target="_blank" rel="nofollow">{{ wine.url }}</a></td>
-                </tr>
-        </table>
-        <br>
-    
-    
-    </div>
-    {% endfor %}
+<div id="results">
+<h2>Results for: "{{ query }}"</h2>
+{% for wine in wines %}
+<div id="wine">
+    <table border="0" width="900" border="1">
+        <!-- <caption></caption>  -->
+        <tr>
+            <td width="15%"> {{ wine.country }}</td>
+
+            {% if wine.name %}
+            <td><b> {{ wine.name }}, {{ wine.winery }}</b></td>
+            {% else %}
+            <td><b> {{ wine.winery }}</b></td>
+            {% endif %}
+
+            <td></td>
+            <td width="7%">{{ wine.vintage }}</td>
+            <td width="7%"></td>
+        </tr>
+        <tr>
+            <td> {{ wine.province }}</td>
+            <td colspan="3" rowspan="3">{{ wine.description }}</td>
+            <td>{{ wine.score }}/100</td>
+
+        </tr>
+        <tr>
+            <td> {{ wine.type }}</td>
+            {% if title %}
+            <td>{{ wine.price }}$</td>
+            {% else %}
+            <td>{{ wine.price }}</td>
+            {% endif %}
+
+        </tr>
+        <tr>
+            <td> {{ wine.variety }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="5"><a href={{ wine.url }} target="_blank" rel="nofollow">{{ wine.url }}</a></td>
+        </tr>
+    </table>
+    <br><br>
+
+
+</div>
+
+{% endfor %}
+</div>
 {% endblock %}

@@ -11,7 +11,7 @@ def index():
         # flash('Query {}'.format(
         #     search.query.data))
         return search_query(search)
-    return render_template('index.html', title='WineSearch', form=search)
+    return render_template('index.html', title='WineSearch', form=search,cur_page='home')
 
 
 #@app.route('/results')
@@ -26,9 +26,9 @@ def search_query(query):
 
     results = results_from_query(search_string)
 
-    return render_template('results.html', title='Results', query=search_string, wines=results, form=search2)
+    return render_template('results.html', title='Results', query=search_string, wines=results, form=search2,cur_page='results')
 
 
 @app.route('/about')
 def about_page():
-    return render_template('about.html', title='About')
+    return render_template('about.html', title='WineSearch',cur_page='about')

@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Searching</h1>
+<div class="center">
+    <h1>Find the perfect Wine for you</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.query.label }}<br>
+            {{ form.query.label }} <br>
             {{ form.query(size=32) }}<br><br>
-           <!-- {{ form.score.label }}<br>
-            {{ form.score }} --> 
+
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-
-    {% block results %}{% endblock %}
+</div>
 {% endblock %}
+
+{% block results %}{% endblock %}
+
+
