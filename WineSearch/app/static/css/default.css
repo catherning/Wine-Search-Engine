@@ -530,7 +530,7 @@
 	{
 		overflow: hidden;
 		padding: 5em 0em;
-		border-top: 1px solid rgba(255,255,255,0.08);
+		border-top: 20px solid rgba(255,255,255,0.08);
 		text-align: center;
 	}
 	
