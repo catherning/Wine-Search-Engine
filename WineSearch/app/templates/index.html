@@ -3,19 +3,18 @@
 {% block content %}
 <div class="center">
     <h1>Find the perfect Wine for you</h1>
-    <form action="" method="POST" novalidate>
+    <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <div>
+        <p>
             {{ form.query.label }} <br>
-            {{ form.query }}<br>
-            {{form.score.label}} {{form.score}} <br>
-            Price &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{form.price_l}} <b>-</b> {{form.price_h}}
-            <br>
+            {{ form.query(size=32) }}<br><br>
 
-        </div>
+        </p>
         <p>{{ form.submit() }}</p>
     </form>
 </div>
 {% endblock %}
 
 {% block results %}{% endblock %}
+
+
