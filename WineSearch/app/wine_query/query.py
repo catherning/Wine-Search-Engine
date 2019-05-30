@@ -22,7 +22,7 @@ c.execute('''SELECT MAX(wine_id) from wines''')
 TOTAL_DOCS=c.fetchone()[0]+1 
 conn.commit()
 
-#print(TOTAL_DOCS)
+# print(TOTAL_DOCS)
 
 
 with open(path+"vocabulary_id.json") as f:
@@ -74,21 +74,83 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
 
     # ============================ Finding the relevant results =================================
 
-    # Get similarity with docs
-    query_dict=Counter(stemmed_query)
-    size_query=len(stemmed_query)
 
-    similarity_list=[0.]*TOTAL_DOCS
-    #TODO make faster!!!!!!
-    for query_w_id, count in query_dict.items():
-        tf_q=count/size_query
 
-        for doc,weight in tf_idf_dict[str(query_w_id)].items():
-            similarity_list[int(doc)]+=tf_q*weight
+    conn = sqlite3.connect(path_to_db)
+    c = conn.cursor()
+
+    print(score)
+    print(price)
+
+    #Selecting wine id of score higher than score
+    if score!='None':
+        sql="SELECT wine_id from wines where score>(?)"
+        c.execute(sql, (int(score),))
+
+        wine_id_score=c.fetchall()
+        wine_id_score=set([el[0] for el in wine_id_score])
+        conn.commit() 
+    else:
+        wine_id_score=set([i for i in range(TOTAL_DOCS)])
+
+    # Selecting wine id of price between lowest price and highest price
+    if price==[None,None]:
+        wine_id_price=set([i for i in range(TOTAL_DOCS)])
+    else:
+        if price[0]!=None and price[1]==None:
+            sql="SELECT wine_id from wines where price>(?)"
+            c.execute(sql, (price[0],))
+        elif price[0]==None and price[1]!=None:
+            sql="SELECT wine_id from wines where price<(?)"
+            c.execute(sql, (price[1],))
+        elif price[0]!=None and price[1]!=None:
+            price.sort()
+            sql="SELECT wine_id from wines where price>(?) and price<(?)"
+            c.execute(sql, (price[0],price[1]))
+
+        wine_id_price=c.fetchall()
+        wine_id_price=set([el[0] for el in wine_id_price])
+        conn.commit()
+    
+    print(len(wine_id_price))
+
+    valid_condition_wine_id=wine_id_price.intersection(wine_id_score)
+
+    print(len(valid_condition_wine_id))
+
+    if len(valid_condition_wine_id)==0:
+        FLAG_CONDITION=1
+
+        # Get similarity with docs
+        query_dict=Counter(stemmed_query)
+        size_query=len(stemmed_query)
+
+        similarity_list=[0.]*TOTAL_DOCS
+        for query_w_id, count in query_dict.items():
+            tf_q=count/size_query
+
+            for doc,weight in tf_idf_dict[str(query_w_id)].items():
+                similarity_list[int(doc)]+=tf_q*weight
+    
+    else:
+        # Get similarity with docs
+        query_dict=Counter(stemmed_query)
+        size_query=len(stemmed_query)
+
+        similarity_list=[0.]*len(valid_condition_wine_id)
+        for query_w_id, count in query_dict.items():
+            tf_q=count/size_query
+
+            for doc,weight in tf_idf_dict[str(query_w_id)].items():
+                if doc in valid_condition_wine_id:
+                    similarity_list[int(doc)]+=tf_q*weight
+
+        
+        FLAG_CONDITION=0
+
 
     #TODO how to get the pages with no description of wine? How to get results if no word matches any description ???????
 
-    #print("Calculated similarity for all with the terms.")
 
     relevant_doc_id=list(zip(*heapq.nlargest(NB_RESULTS, enumerate(similarity_list), key=itemgetter(1))))[0]
     #[1] is the similarity score
@@ -98,13 +160,13 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
     #XXX can do above in C++ faster ??
 
 
-    conn = sqlite3.connect(path_to_db)
-    c = conn.cursor()
+    # conn = sqlite3.connect(path_to_db)
+    # c = conn.cursor()
     # (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
 
+    sql="SELECT * from wines where wine_id in ({seq})".format(
+        seq=','.join(['?']*len(relevant_doc_id)))
 
-    sql="select * from wines where wine_id in ({seq})".format(
-    seq=','.join(['?']*len(relevant_doc_id)))
 
     c.execute(sql, relevant_doc_id)
 
@@ -123,11 +185,7 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
             except Exception:
                 continue
 
-    print(score)
-    print(price)
-
-
-    return r
+    return r,FLAG_CONDITION
     
 
 

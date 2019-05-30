@@ -6,6 +6,7 @@
     <form action="" method="POST" novalidate>
         {{ form.hidden_tag() }}
         <div>
+            <br>
             {{ form.query }}<br>
             {{form.score.label}}: {{form.score}} <br>
             Price {{form.price_l}} <b>-</b> {{form.price_h}}

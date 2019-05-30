@@ -3,10 +3,13 @@
 {% block results %}
 <div id="results">
 <h2>Results for: "{{ query }}"</h2>
+{% if flag==1 %}
+<p>Sorry, no wine matching the score and/or price condition. Searching only {{query}}</p>
+{% endif %}
+
 {% for wine in wines %}
 <div id="wine">
     <table border="0" width="900" border="1">
-        <!-- <caption></caption>  -->
         <tr>
             <td width="15%"> {{ wine.country }}</td>
 

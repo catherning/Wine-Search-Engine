@@ -82,9 +82,18 @@ a:hover
 		}
 
 		/*TODO check, but do by id because want smaller for price ?*/
-		form input
+		/*form input
 		{
-			width: 150%;
+			width: 130%;
+		}*/
+
+		#query{
+			width:350px;
+		}
+
+		#price
+		{
+			width:70px;
 		}
 	
 		form input.text,

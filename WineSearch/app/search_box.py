@@ -17,7 +17,8 @@ class SearchBox(FlaskForm):
     #                             ('75', 'Above 75'),
     #                             ('90', 'Above 90')])
 
-    price_l = IntegerField('Lowest price',validators=[Optional()])  # TODO check max price ?
-    price_h = IntegerField('Highest price',validators=[Optional()])
-
+    price_l = IntegerField('price',validators=[Optional()])  # TODO check max price ?
+    price_h = IntegerField('price',validators=[Optional()])
+    #TODO check if people enter not integers
+    
     submit = SubmitField('Search')
