@@ -10,15 +10,10 @@ class SearchBox(FlaskForm):
                                  ('50', 'Above 50'),
                                  ('75', 'Above 75'),
                                  ('90', 'Above 90')],)
-    #score = StringField('Minimum score out of 100')
-    # price= SelectField('Price (in $)',
-    #                     choices=[('None', '-'),
-    #                             ('20', 'Below 20'),
-    #                             ('75', 'Above 75'),
-    #                             ('90', 'Above 90')])
 
-    price_l = IntegerField('price',validators=[Optional()])  # TODO check max price ?
-    price_h = IntegerField('price',validators=[Optional()])
+
+    price_l = IntegerField('price_l',validators=[Optional()])  # TODO check max price ?
+    price_h = IntegerField('price_h',validators=[Optional()])
     #TODO check if people enter not integers
     
     submit = SubmitField('Search')

@@ -91,19 +91,23 @@ a:hover
 			font-size: 1.3em;
 		}
 
-		/*TODO check, but do by id because want smaller for price ?*/
-		/*form input
-		{
-			width: 130%;
-		}*/
-
 		#query{
 			width:350px;
 		}
 
-		#price
+		#price_l,#price_h
 		{
-			width:70px;
+			width:50px;
+		}
+
+		label[for=score]
+		{
+			display:initial;
+		}
+
+		#score
+		{
+			width:90px;
 		}
 	
 		form input.text,
