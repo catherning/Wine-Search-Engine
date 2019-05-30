@@ -58,6 +58,16 @@ a:hover
 	width: 1200px;
 }
 
+#results
+{
+	text-align: center;
+}
+
+#wine
+{
+	margin-left:10px;
+}
+
 
 /*********************************************************************************/
 /* Form Style                                                                    */

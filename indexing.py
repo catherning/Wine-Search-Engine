@@ -109,6 +109,7 @@ c = conn.cursor()
 
 columns=['country','name','score','price','province','region_1','region_2','vintage','variety','winery',"type"]
 #XXX put together region 1 and 2 for search ?
+#TODO put all variables except price and score with description ?????
 
 vocab_database={}
 for column in columns:
