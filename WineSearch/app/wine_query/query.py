@@ -50,6 +50,11 @@ def dict_factory(cursor, row):
 
 
 def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict,NB_RESULTS,path_to_db):
+    """
+    returns:
+        - results
+        - FLAG_CONDITION: 0 if normal, 1 if the conditions give no relevant results, 
+    """
 
     #TODO some spelling check of the query beforehand ? add vocabulary (both) to the spelling check dictionary possible ?
     sentence = query.lower()
@@ -134,11 +139,14 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
         
         return similarity_list
 
-    if len(valid_condition_wine_id)==0 or len(valid_condition_wine_id)==TOTAL_DOCS:
+    if len(valid_condition_wine_id)==0:
         FLAG_CONDITION=1
-
         similarity_list=similarity_all()
-    
+
+    elif len(valid_condition_wine_id)==TOTAL_DOCS:
+        FLAG_CONDITION=0
+        similarity_list=similarity_all()
+        
     else:
         # Get similarity with docs
         query_dict=Counter(stemmed_query)
