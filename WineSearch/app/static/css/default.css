@@ -18,7 +18,7 @@ h1, h2, h3
 {
 	margin: 0;
 	padding: 0;
-	color: #404040;
+	color: #545454;
 }
 
 p, ol, ul
@@ -338,7 +338,7 @@ ul.contact li a:before
 {
 	overflow: hidden;
 	padding: 2em 0em;
-	background: #2F1E28;
+	background: #502727;
 }
 
 #header
@@ -504,7 +504,7 @@ ul.contact li a:before
 #page-wrapper
 {
 	overflow: hidden;
-	background: #2F1E28;
+	background: #502727;
 	padding: 3em 0em 6em 0em;
 	text-align: center;
 }

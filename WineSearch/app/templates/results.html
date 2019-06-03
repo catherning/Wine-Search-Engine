@@ -27,14 +27,18 @@
                 <td width="7%"></td>
             </tr>
             <tr>
-                <td> {{ wine.province }}</td>
+                {% if wine.province!=None %}
+                <td>{{ wine.province }}</td>
+                {% else %}
+                <td></td>
+                {% endif %}
                 <td colspan="3" rowspan="3">{{ wine.description }}</td>
                 <td>{{ wine.score }}/100</td>
 
             </tr>
             <tr>
                 <td> {{ wine.type }}</td>
-                {% if title %}
+                {% if wine.price or wine.price!=None %}
                 <td>{{ wine.price }}$</td>
                 {% else %}
                 <td>{{ wine.price }}</td>

@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="center">
-    <h1>Find the perfect Wine for you</h1>
+    <h1>Find the next wine for you</h1>
     <form action="" method="POST" novalidate>
         {{ form.hidden_tag() }}
         <div>
             <br>
             {{ form.query }}<br>
             {{form.score.label}} {{form.score}} &nbsp;&nbsp;&nbsp;&nbsp;
-            Price {{form.price_l}} <b>-</b> {{form.price_h}}
+            Price (in $) {{form.price_l}} <b>-</b> {{form.price_h}}
             <br>
 
         </div>
