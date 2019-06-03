@@ -6,6 +6,11 @@
 5. ranking.py
 6. query.py in front-end
 
+# Needed for server
+- wines.db
+- tf_idf.json
+- vocabulary_id.json
+
 # DB files
 To put online:
 - inverted_index.json -> to csv -> to db
