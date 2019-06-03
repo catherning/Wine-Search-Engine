@@ -4,7 +4,7 @@
 3. iwinedb_json_to_db.py
 4. indexing.py
 5. ranking.py
-6. query.py
+6. query.py in front-end
 
 # DB files
 To put online:

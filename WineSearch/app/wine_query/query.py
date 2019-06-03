@@ -6,6 +6,7 @@ from operator import itemgetter
 import heapq
 import json
 import sqlite3
+from spellchecker import SpellChecker
 
 NB_RESULTS=10
 path="D:/Documents/Tsinghua/WIR-WineSearch/"
@@ -31,8 +32,8 @@ with open(path+"vocabulary_id.json") as f:
 with open(path+"tf_idf.json") as f:
     tf_idf_dict=json.load(f)
 
-with open(path+"vocabulary_database.json") as f:
-    vocab_database=json.load(f)
+# with open(path+"vocabulary_database.json") as f:
+#     vocab_database=json.load(f)
 
 # Processing the query
 
@@ -62,19 +63,20 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
     filtered_sentence = [w for w in tokens if not w in stop_words] 
 
     stemmed_query=[]
-    not_in_voc=[] #XXX TODO process them by checking if they are winery, region, country, vintage, type of wine etc ??
+#    not_in_voc=[] #XXX TODO process them by checking if they are winery, region, country, vintage, type of wine etc ??
     #XXX And/Or later add filters for price, score
 
     for word in filtered_sentence:
         stem_w=ps.stem(word)
 
-        in_database_list=[k for k, v in vocab_database.items() if word in v]
+        # not_in_voc and in_database_list for same goal, but useless if ok by putting all together
+        #in_database_list=[k for k, v in vocab_database.items() if word in v]
 
         #XXX if query word not in vocabulary, not taken care of with VSM!!!!
         if stem_w in vocabulary:
             stemmed_query.append(vocabulary[stem_w])
-        else:
-            not_in_voc.append(word) #keeping the full word for checking against the other values in database
+        #else:
+ #           not_in_voc.append(word) #keeping the full word for checking against the other values in database
 
 
     # ============================ Finding the relevant results =================================
@@ -120,10 +122,8 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
 
     valid_condition_wine_id=wine_id_price.intersection(wine_id_score)
 
-    print(1 in valid_condition_wine_id)
-
-    print(len(wine_id_price))
-    print(len(valid_condition_wine_id))
+    # print(len(wine_id_price))
+    # print(len(valid_condition_wine_id))
 
     def similarity_all():
         # Get similarity with docs
@@ -179,7 +179,7 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
     relevance_score=relevant_doc[1]
     #[1] is the similarity score
 
-    print(relevant_doc_id)
+    #print(relevant_doc_id)
 
 
     # (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
