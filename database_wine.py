@@ -14,7 +14,7 @@ path="D:/Documents/Tsinghua/WIR-WineSearch/"
 conn = sqlite3.connect(path+'wines.db')
 
 c = conn.cursor()
-c.execute('''DROP TABLE wines''') #TODO remove when rest ok
+c.execute('''DROP TABLE wines''')
 
 # Create table
 c.execute('''CREATE TABLE wines
@@ -75,7 +75,7 @@ for csv_f in winemag_files:
 
 
 c.executemany('''INSERT INTO wines(wine_id,country,description,name,score,price,province,region_1,region_2,vintage,variety,winery,type,url)
-                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', to_insert) #TODO check if ok ? removed () for to_insert
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', to_insert)
 conn.commit()
 conn.close()
 

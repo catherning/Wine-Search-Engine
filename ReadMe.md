@@ -22,6 +22,6 @@ Could put postings and tf_idf in same database ? id (might be useless), word, do
 
 To keep locally
 - vocabulary_id (not used ?) -> to csv -> to db (word,id) but not necessary
-- wines_iwinedb.json (TODO get all reviews!!) 
+- wines_iwinedb.json
 -> directly add to pipeline of crawler in DB if possible ? 
 No! Might be much slower bc for now, just 2 sec when put everything at once != one by one

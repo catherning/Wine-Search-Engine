@@ -42,7 +42,6 @@ for t_id,word_data in inverted_index_dict.items():
     tf_idf_dict[t_id]={}
     for doc,tf_td in postings[t_id].items():
         tf_idf_dict[t_id][doc]=(1+math.log10(tf_td))*idf_t
-        #XXX it's sparse, but there's no count if word not present in doc (not a matrix in itself)
 
 print("Calculation of tf-idf of all words in vocabulary done.")
 

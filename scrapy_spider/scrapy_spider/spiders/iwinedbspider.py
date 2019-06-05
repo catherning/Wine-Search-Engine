@@ -42,7 +42,7 @@ class iwinedbSpider(CrawlSpider):
         wine = Wine()
         wine["name"]=re.sub("^\d{4} ","",response.xpath("//span[@id='LabelWineTitle']//text() ").extract_first())
         wine["url"] = response.url
-        wine["price"]=response.xpath("//span[@id='LabelReleasePrice']//text() ").extract_first() #XXX price keep currency!!!! (so also in database from winemag, TODO add currency and change type of column)
+        wine["price"]=response.xpath("//span[@id='LabelReleasePrice']//text() ").extract_first()
         
         wine["vintage"]=response.xpath("//span[@id='LabelVintage']//text() ").extract_first()
         wine["type_wine"]=response.xpath("//span[@id='LabelVarietalType']//text() ").extract_first()

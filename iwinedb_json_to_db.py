@@ -28,13 +28,14 @@ with open(path+"wines_iwinedb.json") as f:
 a=datetime.datetime.now()
 to_insert=[]
 for i,wine in enumerate(data):
-    #XXX For now, all prices in dollars, so removed the $
+    
     row=[init_nb_wines+i]+[wine["country"],"",wine["name"].replace(wine["winery"],""),wine["score"]]
     
     if wine["price"]==None:
         price=[None]
+    # Remove the $
     else:
-        price=[locale.atof(wine["price"][1:])]
+        price=[locale.atof(wine["price"][1:])] 
     
     if len(wine["region"])<=3:
         regions=wine["region"]+[None]*(3-len(wine["region"]))

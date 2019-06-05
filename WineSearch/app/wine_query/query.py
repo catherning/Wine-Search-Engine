@@ -63,8 +63,6 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
     filtered_sentence = [w for w in tokens if not w in stop_words] 
 
     stemmed_query=[]
-#    not_in_voc=[] #XXX TODO process them by checking if they are winery, region, country, vintage, type of wine etc ??
-    #XXX And/Or later add filters for price, score
 
     for word in filtered_sentence:
         stem_w=ps.stem(word)
@@ -101,7 +99,6 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
         wine_id_score=full_set
 
     # Selecting wine id of price between lowest price and highest price
-    #TODO price doesn't work yet
     if price==[None,None]:
         wine_id_price=full_set
     else:
@@ -169,9 +166,6 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
             FLAG_CONDITION=1
         else:        
             FLAG_CONDITION=0
-
-
-    #TODO how to get the pages with no description of wine? How to get results if no word matches any description ???????
 
 
     relevant_doc=list(zip(*heapq.nlargest(NB_RESULTS, enumerate(similarity_list), key=itemgetter(1))))

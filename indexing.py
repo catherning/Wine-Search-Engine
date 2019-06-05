@@ -22,8 +22,6 @@ conn.commit()
 print(TOTAL_DOCS)
 
 
-#TODO add wine name/ winery, country, region to stemmed vocab and indexing ? or useless as are already in database in specific columns?
-
 # Selecting stemmed keywords and calculating occurences
 c.execute('''SELECT wine_id,description, name,province,region_1,region_2,vintage, variety, winery from wines''')
 data=c.fetchall()
@@ -102,35 +100,6 @@ for w_id, group in groupby(tuple_index, lambda x: x[0]):
     for tuple_ in group:
         total_count+=tuple_[2]
     inverted_index_dict[w_id]["total_count"]=total_count
-
-
-
-# ======================== Separate vocabulary for the other categories. TODO if not good enough
-# conn = sqlite3.connect(path+'wines.db')
-# c = conn.cursor()
-# # (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
-
-# # Getting list of the values in the database (except description)
-
-# columns=['country','name','score','price','province','region_1','region_2','vintage','variety','winery',"type"]
-# #XXX put together region 1 and 2 for search ?
-# #TODO put all variables except price and score with description ?????
-
-# vocab_database={}
-# for column in columns:
-#     c.execute("SELECT DISTINCT "+column+" from wines")
-#     data=c.fetchall()
-#     conn.commit()
-
-#     if column in ['name','province','region_1','region_2','variety','winery']:
-#         vocab_database[column+"_list"]=[el[0].split() for el in data if el[0]!="" and el[0]!=None] #XXX keeping "" in the vocab bc it's in database ?s
-#     else:
-#         vocab_database[column+"_list"]=[el[0] for el in data if el[0]!=""]
-
-# conn.close()
-
-
-
 
 
 print("Created the inverted index (dictionary and postings). Saving it and the vocabulary.")
