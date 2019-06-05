@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, IntegerField
+from wtforms import StringField, SubmitField, SelectField, FloatField
 from wtforms.validators import DataRequired, Optional, NumberRange
 
 
@@ -12,8 +12,8 @@ class SearchBox(FlaskForm):
                                  ('90', 'Above 90')],)
 
 
-    price_l = IntegerField('price_l',validators=[Optional()])  # TODO check max price ?
-    price_h = IntegerField('price_h',validators=[Optional()])
+    price_l = FloatField('price_l',validators=[Optional()])  # TODO check max price ?
+    price_h = FloatField('price_h',validators=[Optional()])
     #TODO check if people enter not integers
     
     submit = SubmitField('Search')

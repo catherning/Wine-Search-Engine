@@ -3,8 +3,14 @@
 {% block results %}
 <div id="results">
     <br>
+
+    {% if flag_correct %}
     <h2>Results for: "{{ query }}"</h2>
-    {% if flag==1 %}
+    {% else %}
+    <h2>Correction - searching for: "{{ query }}"</h2>
+    {% endif %}
+    
+    {% if flag_cond==1 %}
     <p>Sorry, no wine matching the score and/or price condition. Searching only for the string query "{{query}}"</p>
     {% endif %}
 

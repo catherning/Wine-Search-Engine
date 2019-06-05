@@ -36,6 +36,7 @@ tokenizer = RegexpTokenizer(r'\w+')
 
 vocabulary={}
 inverted_index_dict={}
+spellchecker_dictionary=Counter()
 w_id=0
 
 # TODO also do lemmatization and convert numbers and the apostrophe in don't ??
@@ -53,6 +54,8 @@ for i,row in enumerate(data):
             sentence+=str(row[j])+" "
     tokens = tokenizer.tokenize(sentence)
     filtered_sentence = [w for w in tokens if not w in stop_words] 
+
+    spellchecker_dictionary.update(filtered_sentence)
 
     stemmed_sent=[]
     for word in filtered_sentence:
@@ -112,3 +115,5 @@ with open(path+'postings.json', 'w') as fp:
 with open(path+'vocabulary_id.json', 'w') as fp:
     json.dump(vocabulary, fp, sort_keys=True, indent=4)
 
+with open(path+'spellcheck_dict.json', 'w') as fp:
+    json.dump(spellchecker_dictionary, fp, sort_keys=True, indent=4)

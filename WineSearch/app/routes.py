@@ -25,9 +25,9 @@ def search_query(query,first_time=True):
     search_string = query.data['query']
     score=query.data['score']
     price=[query.data['price_l'],query.data['price_h']]
-    results,FLAG_CONDITION = results_from_query(search_string,score=score,price=price)
+    results,FLAG_CONDITION,corrected_query,FLAG_CORRECT = results_from_query(search_string,score=score,price=price)
 
-    return render_template('results.html', title='WineSearch', query=search_string, wines=results, form=search2,cur_page='results',score=score,flag=FLAG_CONDITION)
+    return render_template('results.html', title='WineSearch', query=corrected_query, wines=results, form=search2,cur_page='results',score=score,flag_cond=FLAG_CONDITION,flag_correct=FLAG_CORRECT)
 
 
 @app.route('/about')

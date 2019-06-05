@@ -15,16 +15,10 @@ path_to_db=path+'wines.db'
 
 conn = sqlite3.connect(path_to_db)
 c = conn.cursor()
-# (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
-
-
 c.execute('''SELECT MAX(wine_id) from wines''')
 
 TOTAL_DOCS=c.fetchone()[0]+1 
 conn.commit()
-
-# print(TOTAL_DOCS)
-
 
 with open(path+"vocabulary_id.json") as f:
     vocabulary=json.load(f)
@@ -37,8 +31,7 @@ with open(path+"tf_idf.json") as f:
 ps = PorterStemmer()
 stop_words = list(stopwords.words('english'))
 tokenizer = RegexpTokenizer(r'\w+')
-
-query="dom perignon citrus sweet young"
+spell = SpellChecker(local_dictionary=path+'spellcheck_dict.json')
 
 def dict_factory(cursor, row):
     d = {}
@@ -54,35 +47,35 @@ def results_from_query(query,score=None,price=None):
         - FLAG_CONDITION: 0 if normal, 1 if the conditions give no relevant results, 
     """
 
-    #TODO some spelling check of the query beforehand ? add vocabulary (both) to the spelling check dictionary possible ?
-    spell = SpellChecker()
+    print(query)
 
     sentence = query.lower()
     tokens = tokenizer.tokenize(sentence)
     filtered_sentence = [w for w in tokens if not w in stop_words] 
     misspelled = spell.unknown (filtered_sentence)
+    corrected_query=[]
     
     stemmed_query=[]
 
     for word in filtered_sentence:
         correct_spell= spell.correction(word)
-        print(correct_spell)
         stem_w=ps.stem(correct_spell)
-        print(stem_w)
 
-        # not_in_voc and in_database_list for same goal, but useless if ok by putting all together
-        #in_database_list=[k for k, v in vocab_database.items() if word in v]
-
-        #XXX if query word not in vocabulary, not taken care of with VSM!!!!
         if stem_w in vocabulary:
             stemmed_query.append(vocabulary[stem_w])
-        #else:
- #           not_in_voc.append(word) #keeping the full word for checking against the other values in database
 
+        corrected_query.append(correct_spell)
+    
+    if filtered_sentence==corrected_query:
+        FLAG_CORRECT=True
+    else:
+        FLAG_CORRECT=False
+    
+    corrected_query = ' '.join(str(e) for e in corrected_query)
 
     # ============================ Finding the relevant results =================================
 
-
+    #TODO check highest price, highest score
 
     conn = sqlite3.connect(path_to_db)
     c = conn.cursor()
@@ -122,8 +115,6 @@ def results_from_query(query,score=None,price=None):
 
     valid_condition_wine_id=wine_id_price.intersection(wine_id_score)
 
-    # print(len(wine_id_price))
-    # print(len(valid_condition_wine_id))
 
     def similarity_all():
         # Get similarity with docs
@@ -175,9 +166,6 @@ def results_from_query(query,score=None,price=None):
     relevant_doc_id=relevant_doc[0]
     relevance_score=relevant_doc[1]
 
-    #print(relevant_doc_id)
-
-
     sql="SELECT * from wines where wine_id in ({seq})".format(
         seq=','.join(['?']*len(relevant_doc_id)))
 
@@ -188,27 +176,22 @@ def results_from_query(query,score=None,price=None):
     conn.commit()    
     conn.close()
 
-    # Reorders the results by order of relevance (Selecting in SQL returns them in order of the database, by wine_id)
-    results_list = [dict((c.description[i][0], value) \
-        for i, value in enumerate(row)) for row in results]
+    # Reorders by score in the end
+    results_list = [dict((c.description[i][0], value) for i, value in enumerate(row)) for row in results]
+
     for wine in results_list:
         for key,value in wine.items():
             try:
                 wine[key]=value.replace("&amp;","&")
             except Exception:
                 continue
-        
-        wine_id=wine["wine_id"]
-        rank=relevant_doc_id.index(wine_id) 
-        wine["relevance"]=relevance_score[rank]
     
-    results_list=sorted(results_list, key=itemgetter('relevance'), reverse=True)
+    results_list=sorted(results_list, key=itemgetter('score'), reverse=True)
 
-    return results_list,FLAG_CONDITION
+    return results_list,FLAG_CONDITION,corrected_query,FLAG_CORRECT
     
-
+    
 
 if __name__ == "__main__":
+    query="2010 château latour complex"
     results_from_query(query,price=[None,50]) 
-
-    
