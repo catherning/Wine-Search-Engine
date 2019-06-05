@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Optional, NumberRange
 
 
 class SearchBox(FlaskForm):
-    query = StringField('', render_kw={"placeholder": '"dom perignon 2010","red france cherry smoked"'})  # , validators=[DataRequired()])
+    query = StringField('', render_kw={"placeholder": '"dom perignon","red cherry smoked 2010"'})  # , validators=[DataRequired()])
     score = SelectField('Score (out of 100)',validators=[Optional()],
                         choices=[('None', '-'),
                                  ('50', 'Above 50'),

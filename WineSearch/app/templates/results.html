@@ -32,16 +32,22 @@
                 {% else %}
                 <td></td>
                 {% endif %}
+
+                {% if wine.description %}
                 <td colspan="3" rowspan="3">{{ wine.description }}</td>
+                {% else %}
+                <td colspan="3" rowspan="3">Sorry, no wine review available</td>
+                {% endif %}
+
                 <td>{{ wine.score }}/100</td>
 
             </tr>
             <tr>
                 <td> {{ wine.type }}</td>
-                {% if wine.price or wine.price!=None %}
+                {% if wine.price and wine.price!=None %}
                 <td>{{ wine.price }}$</td>
                 {% else %}
-                <td>{{ wine.price }}</td>
+                <td></td>
                 {% endif %}
 
             </tr>

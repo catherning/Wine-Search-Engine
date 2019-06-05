@@ -32,9 +32,6 @@ with open(path+"vocabulary_id.json") as f:
 with open(path+"tf_idf.json") as f:
     tf_idf_dict=json.load(f)
 
-# with open(path+"vocabulary_database.json") as f:
-#     vocab_database=json.load(f)
-
 # Processing the query
 
 ps = PorterStemmer()
@@ -50,7 +47,7 @@ def dict_factory(cursor, row):
     return d
 
 
-def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,TOTAL_DOCS,tf_idf_dict,NB_RESULTS,path_to_db):
+def results_from_query(query,score=None,price=None):
     """
     returns:
         - results
@@ -58,14 +55,20 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
     """
 
     #TODO some spelling check of the query beforehand ? add vocabulary (both) to the spelling check dictionary possible ?
+    spell = SpellChecker()
+
     sentence = query.lower()
     tokens = tokenizer.tokenize(sentence)
     filtered_sentence = [w for w in tokens if not w in stop_words] 
-
+    misspelled = spell.unknown (filtered_sentence)
+    
     stemmed_query=[]
 
     for word in filtered_sentence:
-        stem_w=ps.stem(word)
+        correct_spell= spell.correction(word)
+        print(correct_spell)
+        stem_w=ps.stem(correct_spell)
+        print(stem_w)
 
         # not_in_voc and in_database_list for same goal, but useless if ok by putting all together
         #in_database_list=[k for k, v in vocab_database.items() if word in v]
@@ -167,16 +170,13 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
         else:        
             FLAG_CONDITION=0
 
-
+    #TODO add relevance with price and score ? rel = tf_idf * score/100 * 1/log(price) for NB_results * 5, re-do  ranking
     relevant_doc=list(zip(*heapq.nlargest(NB_RESULTS, enumerate(similarity_list), key=itemgetter(1))))
     relevant_doc_id=relevant_doc[0]
     relevance_score=relevant_doc[1]
-    #[1] is the similarity score
 
     #print(relevant_doc_id)
 
-
-    # (wine_id INTEGER PRIMARY KEY,country TEXT,description TEXT,name TEXT,score INTEGER,price REAL,province TEXT,region_1 TEXT,region_2 TEXT, vintage INTEGER,variety TEXT,winery TEXT, url TEXT)''')
 
     sql="SELECT * from wines where wine_id in ({seq})".format(
         seq=','.join(['?']*len(relevant_doc_id)))
@@ -188,7 +188,7 @@ def results_from_query(query,score=None,price=None):#,vocab_database,vocabulary,
     conn.commit()    
     conn.close()
 
-    # Reorder the results by order of relevance (Selecting in SQL returns them in order of the database, by wine_id)
+    # Reorders the results by order of relevance (Selecting in SQL returns them in order of the database, by wine_id)
     results_list = [dict((c.description[i][0], value) \
         for i, value in enumerate(row)) for row in results]
     for wine in results_list:

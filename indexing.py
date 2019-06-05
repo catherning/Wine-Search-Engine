@@ -42,7 +42,6 @@ w_id=0
 # https://towardsdatascience.com/tf-idf-for-document-ranking-from-scratch-in-python-on-real-world-dataset-796d339a4089
 
 # Stemming the words (removed the stopwords) for the description of each wine from each website of the database
-#dict_index={}
 tuple_index=[]
 
 for i,row in enumerate(data):
@@ -72,8 +71,6 @@ for i,row in enumerate(data):
     sent_dict=Counter(stemmed_sent)
     for sent_w_id, count in sent_dict.items():
         tuple_index.append((sent_w_id,int(row[0]),count))
-
-    #dict_index[int(row[0])]=sent_dict
 
 print("Processed all rows. Creating the inverted index.")
 
@@ -105,7 +102,6 @@ for w_id, group in groupby(tuple_index, lambda x: x[0]):
 print("Created the inverted index (dictionary and postings). Saving it and the vocabulary.")
 
 # Variables to keep: inverted_index_dict, postings, vocabulary
-# Eventually dict_index which is reverse inverted_index_dict ?
 
 with open(path+'inverted_index.json', 'w') as fp:
     json.dump(inverted_index_dict, fp, sort_keys=True, indent=4)
@@ -115,7 +111,4 @@ with open(path+'postings.json', 'w') as fp:
 
 with open(path+'vocabulary_id.json', 'w') as fp:
     json.dump(vocabulary, fp, sort_keys=True, indent=4)
-
-# with open(path+'vocabulary_database.json','w') as fp:
-#     json.dump(vocab_database, fp, sort_keys=True, indent=4)
 
